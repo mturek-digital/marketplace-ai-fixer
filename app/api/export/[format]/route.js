@@ -1,6 +1,6 @@
 "use client";
 import { useState } from "react";
-
+import TitleModal from "./TitleModal";
 
 function ScorePill({ product }) {
   const [pos, setPos]   = useState({ x: 0, y: 0 });
