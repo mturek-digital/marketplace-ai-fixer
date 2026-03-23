@@ -1,0 +1,11 @@
+@import "tailwindcss";
+
+body {
+  font-family: "Geist", system-ui, sans-serif;
+  -webkit-font-smoothing: antialiased;
+}
+
+::-webkit-scrollbar { width: 5px; height: 5px; }
+::-webkit-scrollbar-track { background: transparent; }
+::-webkit-scrollbar-thumb { background: #a3a3a3; }
+::-webkit-scrollbar-thumb:hover { background: #525252; }
