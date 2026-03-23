@@ -163,7 +163,7 @@ export default function Home() {
       <aside className="w-[200px] flex-shrink-0 bg-white border-r border-neutral-200 flex flex-col">
         <div className="flex items-center gap-2 px-4 py-5 border-b border-neutral-200">
           <span className="w-6 h-6 bg-neutral-900 text-white flex items-center justify-center font-mono text-sm font-bold flex-shrink-0">v</span>
-          <span className="text-sm text-neutral-500">Auto<strong className="text-neutral-900 font-bold">mate</strong></span>
+          <span className="text-sm text-neutral-500">AI-<strong className="text-neutral-900 font-bold">Fixer</strong></span>
         </div>
         <nav className="flex-1 p-2.5 flex flex-col gap-0.5">
           {navItems.map(({ id, label, icon }) => (
@@ -180,10 +180,7 @@ export default function Home() {
             </button>
           ))}
         </nav>
-        <div className="flex items-center gap-2 px-4 py-3.5 border-t border-neutral-200">
-          <span className="w-1.5 h-1.5 bg-green-600 rounded-full flex-shrink-0 animate-pulse" />
-          <span className="font-mono text-[10px] text-neutral-400 tracking-widest uppercase">OpenAI API</span>
-        </div>
+        
       </aside>
 
       
