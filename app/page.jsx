@@ -4,27 +4,10 @@ import UploadZone from "@/components/UploadZone";
 import StatsGrid from "@/components/StatsGrid";
 import ProductTable from "@/components/ProductTable";
 import DuplicatesAlert from "@/components/DuplicatesAlert";
+import { scoreProduct } from "@/lib/scorer";
 
 const STORAGE_KEY  = "vautomate_products";
 const FILENAME_KEY = "vautomate_filename";
-
-function recalcScore(p) {
-  let score = 0;
-  const breakdown = [];
-  const add = (label, pts, max, ok, hint = null) => { score += pts; breakdown.push({ label, pts, max, ok, hint }); };
-  p.ean && p.ean.trim() ? add("EAN", 20, 20, true) : add("EAN", 0, 20, false, "Brak EAN");
-  p.dimensions          ? add("Wymiary", 15, 15, true) : add("Wymiary", 0, 15, false, "Brak wymiarów");
-  p.color               ? add("Kolor", 10, 10, true) : add("Kolor", 0, 10, false, "Brak koloru");
-  const dl = (p.description||"").length, dp = Math.min(20, Math.round((dl/120)*20));
-  add("Opis", dp, 20, dp >= 15, dp < 15 ? `Opis za krótki (${dl} zn)` : null);
-  const tl = (p.allegroTitle||"").length;
-  const tp = tl >= 50 && tl <= 75 ? 20 : tl >= 30 ? 12 : tl > 0 ? 6 : 0;
-  add("Tytuł", tp, 20, tp >= 15, tp < 15 ? (tl === 0 ? "Brak tytułu" : `${tl < 50 ? "Za krótki" : "Za długi"} (${tl}zn)`) : null);
-  p.stock > 0 ? add("Stan", 10, 10, true) : add("Stan", 0, 10, false, "Brak towaru");
-  const pv = parseFloat(p.price);
-  p.price && !isNaN(pv) && pv > 0 ? add("Cena", 5, 5, true) : add("Cena", 0, 5, false, "Brak ceny");
-  return { score, grade: score >= 85 ? "A" : score >= 70 ? "B" : score >= 50 ? "C" : "D", breakdown };
-}
 
 function calcStats(products) {
   return {
@@ -133,7 +116,7 @@ export default function Home() {
 
   const handleUpdateProduct = (idx, newTitle) => {
     const updated = products.map((p, i) =>
-      i === idx ? { ...p, allegroTitle: newTitle, quality: recalcScore({ ...p, allegroTitle: newTitle }) } : p
+      i === idx ? { ...p, allegroTitle: newTitle, quality: scoreProduct({ ...p, allegroTitle: newTitle }) } : p
     );
     setProducts(updated);
     setStats(calcStats(updated));
@@ -176,11 +159,11 @@ export default function Home() {
 
   return (
     <div className="flex h-screen overflow-hidden bg-neutral-50">
-      {/* Sidebar */}
+    
       <aside className="w-[200px] flex-shrink-0 bg-white border-r border-neutral-200 flex flex-col">
         <div className="flex items-center gap-2 px-4 py-5 border-b border-neutral-200">
-          <span className="w-6 h-6 bg-neutral-900 text-white flex items-center justify-center font-mono text-sm font-bold flex-shrink-0">AI</span>
-          <span className="text-sm text-neutral-500">AI<strong className="text-neutral-900 font-bold"> Fixer</strong></span>
+          <span className="w-6 h-6 bg-neutral-900 text-white flex items-center justify-center font-mono text-sm font-bold flex-shrink-0">v</span>
+          <span className="text-sm text-neutral-500">Auto<strong className="text-neutral-900 font-bold">mate</strong></span>
         </div>
         <nav className="flex-1 p-2.5 flex flex-col gap-0.5">
           {navItems.map(({ id, label, icon }) => (
@@ -203,7 +186,7 @@ export default function Home() {
         </div>
       </aside>
 
-      {/* Main */}
+      
       <div className="flex-1 flex flex-col overflow-hidden">
         <header className="flex items-start justify-between px-7 py-5 border-b-2 border-neutral-900 bg-white flex-shrink-0">
           <div>
@@ -232,7 +215,7 @@ export default function Home() {
         </header>
 
         <div className="flex-1 overflow-y-auto p-7 flex flex-col">
-          {/* Upload */}
+        
           {view === "upload" && (
             <div className="flex flex-col gap-0">
               <UploadZone onFile={handleFile} />
@@ -248,7 +231,6 @@ export default function Home() {
             </div>
           )}
 
-          {/* Loading */}
           {view === "loading" && (
             <div className="flex-1 flex flex-col items-center justify-center gap-4">
               <div className="w-8 h-8 border-2 border-neutral-200 border-t-neutral-900 rounded-full animate-spin" />
@@ -260,7 +242,6 @@ export default function Home() {
             </div>
           )}
 
-          {/* Products */}
           {view === "products" && stats && (
             <div className="flex flex-col flex-1 gap-0 overflow-hidden">
               <StatsGrid stats={stats} />
@@ -275,7 +256,7 @@ export default function Home() {
         </div>
       </div>
 
-      {/* Toast */}
+  
       {toast && (
         <div className={`fixed bottom-5 right-5 px-4 py-2.5 font-mono text-xs font-bold tracking-wider z-50 border shadow-[4px_4px_0_rgba(0,0,0,0.15)]
           ${toast.type === "error"   ? "bg-red-600 border-red-600 text-white"

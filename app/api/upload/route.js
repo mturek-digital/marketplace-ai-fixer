@@ -33,8 +33,9 @@ export async function POST(request) {
     const scored     = scoreProducts(withTitles);
 
     const dupsResult = detectDuplicates(scored);
-    const flaggedSet = dupsResult.flaggedIndices;
 
+    // flaggedIndices jest teraz Array — bezpieczna serializacja JSON
+    const flaggedSet = new Set(dupsResult.flaggedIndices);
     const withDupFlags = scored.map((p, i) => ({ ...p, isDuplicate: flaggedSet.has(i) }));
 
     const stats = {
